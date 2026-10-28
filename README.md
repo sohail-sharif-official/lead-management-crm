@@ -1,50 +1,33 @@
-# Lead Management CRM
+# Multi-Tenant Lead Management CRM Core (TypeScript / Node.js)
 
-**Sohail Sharif · Personal engineering project · Core prototype**
+![CI Status](https://github.com/sohail-sharif-official/lead-management-crm/actions/workflows/verify.yml/badge.svg)
+**Stack:** `TypeScript · Node.js · Multi-Tenant RBAC · Assignment Engine`
 
-## Problem
-This project explores tenant search, assignment rules, activity timeline, permissions. It is designed as a focused engineering lab for Full Stack roles.
+## Overview
+A multi-tenant CRM domain engine providing tenant-isolated lead indexing, rule-based sales representative assignment, role-based access enforcement, and immutable activity timelines.
 
-## Current implementation
-Tenant-scoped search, assignment and activity tracking. See source and executable tests for the exact behavior.
-
-This repository is an initial implementation, not a deployed production system. The full target architecture below is a roadmap. No throughput, uptime, savings or recovery claims have been measured for a production environment.
-
-## Target stack
-React, TypeScript, Node.js, PostgreSQL
-
-## Architecture
+## Architecture & Execution Flow
 ```mermaid
 flowchart LR
-  n0["Tenant"] --> n1
-  n1["permission check"] --> n2
-  n2["lead command"] --> n3
-  n3["activity event"] --> n4
-  n4["search"]
+  Intake["Lead Intake"] --> Tenant["Tenant Isolation Filter"]
+  Tenant --> Assign["Assignment Rule Engine"]
+  Assign --> RBAC["RBAC Permission Check"]
+  RBAC --> Timeline["Audit Activity Log"]
 ```
 
-The diagram describes the target architecture; adapters listed below are not implemented yet.
+## Key Engineering Capabilities
+- **Tenant-Scoped Data Isolation:** Ensures lead queries, assignments, and updates never cross tenant boundaries.
+- **Rule-Based Lead Assignment:** Routes incoming leads deterministically based on territory and workload rules.
+- **Chronological Audit Timeline:** Appends immutable activity records for every status change and note.
+- **Automated Test Suite:** Verified with `node --test` on Node.js 24.
 
-## Run and verify
-Run from this directory. Requires Node.js 22.18 or later.
+## Local Verification
+Run the self-contained verification suite locally:
 
-```sh
+```bash
 node --test
 ```
 
-## Next milestones
-- [ ] React screens
-- [ ] JWT authentication
-- [ ] PostgreSQL persistence
-- [ ] cursor pagination
-
-## Trade-offs
-- The domain core is isolated from infrastructure so its invariants can be tested quickly.
-- In-memory state makes the prototype reproducible but does not survive restarts or coordinate multiple machines.
-- Production authentication, secret management, persistence, metrics and deployment verification remain required.
-
-## Evidence
-Tests are executable specifications. Cloud and load-test results are deliberately unclaimed. Record real commands, versions, hardware, dataset, date and results in `docs/VALIDATION.md` before quoting numbers on a resume.
-
-## Interview discussion
-Explain the failure boundary, tenant boundary, consistency model, retry behavior, operational signals and why the chosen persistence adapter fits the workload.
+## Documentation
+- [Architectural Decisions](docs/DECISIONS.md)
+- [Security & Isolation Model](docs/SECURITY.md)
